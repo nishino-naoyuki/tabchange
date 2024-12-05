@@ -13,6 +13,7 @@
             "c","^c","d","^d","e","f","^f","g","^g","a","_b","b",        // 20-31
             "c'","^c'","d'","^d'","e'","f'","^f'","g'","^g'","a'","_b'","b'", // 32-43
         ];
+        let renderObj = null;
         const getOnpuString = ( stringNumber )=>{
             let offset = [24,19,15,10,5,0];
             
@@ -26,6 +27,7 @@
         }
 		window.addEventListener("load",()=> {
             let change = document.getElementById('change');
+            let listen = document.getElementById('listen');
             change.addEventListener("click",()=>{    
                 let abc = "L: 1/4\n" +
                 "|";
@@ -34,7 +36,33 @@
                     code += getOnpuString(i);
                 }
                 abc += "["+code+"]";
-                ABCJS.renderAbc("paper", abc);
+                renderObj = ABCJS.renderAbc("paper", abc)[0];
+            });
+
+            listen.addEventListener("click",()=>{
+                if( renderObj == null ){
+                    alert("五線譜を表示してください");
+                    return;
+                }
+                const midiBuffer = new ABCJS.synth.CreateSynth();
+                midiBuffer.init({
+                    visualObj: renderObj,
+                    options:{
+                        program:25
+                        // soundFontUrl: "https://paulrosen.github.io/midi-js-soundfonts/FluidR3_GM/" ,
+                        // sequenceCallback: function(noteMapTracks, callbackContext) { return noteMapTracks; },
+                        // callbackContext: this,
+                        // onEnded: function(callbackContext),
+                        // pan: [ -0.5, 0.5 ]
+                    }
+                }).then(function (response) {
+                    console.log(response);
+                    midiBuffer.prime().then(function (response) {
+                        midiBuffer.start();
+                    });
+                }).catch(function (error) {
+                    console.warn("Audio problem:", error);
+                });
             })
 		});
         
@@ -71,7 +99,8 @@
                         </div>
                     </div>
                 </div>
-                <button id="change" class="btn bg-gradient-primary">五線譜表示</button>
+                <button id="change" class="btn bg-gradient-primary w-75">五線譜表示</button>
+                <button id="listen" class="btn bg-gradient-primary w-75">聞いてみる</button>
             </div>
         </div>
     </div>
