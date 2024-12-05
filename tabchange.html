@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link id="pagestyle" href="assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+	<title>abcjs: Basic Demo</title>
+	<script src="dist/abcjs-basic.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        const onpuList = [
+            "E,","F,","^F","G,","^G","A,","_B","B,",           // 0-7
+            "C","^C","D","^D","E","F","^F","G","^G","A","_B","B",        // 8-19
+            "c","^c","d","^d","e","f","^f","g","^g","a","_b","b",        // 20-31
+            "c'","^c'","d'","^d'","e'","f'","^f'","g'","^g'","a'","_b'","b'", // 32-43
+        ];
+        const getOnpuString = ( stringNumber )=>{
+            let offset = [24,19,15,10,5,0];
+            
+            let onpuStr = "";
+            let tabValue = document.getElementById('s'+stringNumber).value;
+            if( tabValue != "" ){
+                onpuStr = onpuList[offset[stringNumber-1]+Number(tabValue)];
+            }
+
+            return onpuStr;
+        }
+		window.addEventListener("load",()=> {
+            let change = document.getElementById('change');
+            change.addEventListener("click",()=>{    
+                let abc = "L: 1/4\n" +
+                "|";
+                let code = "";
+                for( let i=1; i<=6; i++ ){
+                    code += getOnpuString(i);
+                }
+                abc += "["+code+"]";
+                ABCJS.renderAbc("paper", abc);
+            })
+		});
+        
+
+      </script>
+</head>
+<body>
+    <div class="container text-center">
+        <div class="card card-frame">
+            <div class="card-header">
+                <h3>タブ譜五線譜変換ツール</h3>
+            </div>
+            <div class="card-body">
+                <div id="paper" class="row"></div>
+                <div class="col-md-12">
+                    <div id="tabarea col-md-6" class="row">
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="s1" min="0" value="" placeholder="1弦">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="s2" min="0" value="" placeholder="2弦">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="s3" min="0" value="" placeholder="3弦">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="s4" min="0" value="" placeholder="4弦">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="s5" min="0" value="" placeholder="5弦">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="s6" min="0" value="" placeholder="6弦">
+                        </div>
+                    </div>
+                </div>
+                <button id="change" class="btn bg-gradient-primary">五線譜表示</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
